@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 from aws_scan import run_scan
 from db import init_db
 import sqlite3
+import os
 
 app = Flask(__name__)
 app.secret_key = "secret123"
@@ -78,16 +79,29 @@ def home():
         conn.commit()
         conn.close()
 
-    # fetch only this user's history
+    # fetch history
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
-
     cursor.execute("SELECT bucket_name, result FROM scans WHERE username=?", (session["user"],))
     history = cursor.fetchall()
-
     conn.close()
 
-    return render_template("index.html", results=output, history=history, user=session["user"])
+    # risk counts
+    critical = sum(1 for r in output if "CRITICAL" in r)
+    high = sum(1 for r in output if "HIGH" in r)
+    medium = sum(1 for r in output if "MEDIUM" in r)
+    low = sum(1 for r in output if "LOW" in r)
+
+    return render_template(
+        "index.html",
+        results=output,
+        history=history,
+        user=session["user"],
+        critical=critical,
+        high=high,
+        medium=medium,
+        low=low
+    )
 
 
 # ---------------- LOGOUT ----------------
@@ -96,8 +110,6 @@ def logout():
     session.pop("user", None)
     return redirect("/login")
 
-
-import os
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
