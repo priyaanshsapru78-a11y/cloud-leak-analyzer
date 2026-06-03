@@ -3,217 +3,85 @@
 <head>
     <title>Cloud Leak Analyzer</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
-            margin: 0;
-            height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            background: #020617;
-            overflow: hidden;
-            color: white;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* BACKGROUND */
-        .bg::before, .bg::after {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            z-index: -1;
+        /* subtle animated gradient */
+        .bg-animate {
+            background: radial-gradient(circle at 20% 30%, #1e3a8a, transparent),
+                        radial-gradient(circle at 80% 70%, #2563eb, transparent),
+                        #020617;
+            background-size: 200% 200%;
+            animation: move 10s ease-in-out infinite;
         }
 
-        .bg::before {
-            background: radial-gradient(circle at 30% 40%, rgba(0, 102, 255, 0.4), transparent 60%);
-            animation: move1 12s ease-in-out infinite;
+        @keyframes move {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 50% 50%; }
+            100% { background-position: 0% 0%; }
         }
-
-        .bg::after {
-            background: radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.3), transparent 60%);
-            animation: move2 14s ease-in-out infinite;
-        }
-
-        @keyframes move1 {
-            0% { transform: translate(0,0); }
-            50% { transform: translate(-10%, -10%); }
-            100% { transform: translate(0,0); }
-        }
-
-        @keyframes move2 {
-            0% { transform: translate(0,0); }
-            50% { transform: translate(10%, 10%); }
-            100% { transform: translate(0,0); }
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            padding: 20px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 500;
-        }
-
-        .nav-right a {
-            margin-left: 25px;
-            color: #aaa;
-            text-decoration: none;
-        }
-
-        .nav-right a:hover {
-            color: white;
-        }
-
-        /* MAIN */
-        .main {
-            display: flex;
-            height: 100vh;
-            padding: 60px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        /* LEFT */
-        .left {
-            max-width: 520px;
-        }
-
-        .tag {
-            color: #60a5fa;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .left h1 {
-            font-size: 48px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .left p {
-            color: #aaa;
-            line-height: 1.7;
-        }
-
-        /* CTA */
-        .cta {
-            margin-top: 25px;
-        }
-
-        .cta button {
-            padding: 12px 22px;
-            border-radius: 8px;
-            border: none;
-            margin-right: 10px;
-            cursor: pointer;
-        }
-
-        .primary {
-            background: white;
-            color: black;
-        }
-
-        .secondary {
-            background: transparent;
-            border: 1px solid #aaa;
-            color: white;
-        }
-
-        /* RIGHT BOX */
-        .box {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 14px;
-            width: 320px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: none;
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        input::placeholder {
-            color: #aaa;
-        }
-
-        button.login {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: white;
-            color: black;
-            cursor: pointer;
-        }
-
-        a {
-            color: #aaa;
-            display: block;
-            margin-top: 15px;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: white;
-        }
-
     </style>
 </head>
 
-<body>
-
-<div class="bg"></div>
+<body class="bg-animate text-white">
 
 <!-- NAVBAR -->
-<div class="navbar">
-    <div>Cloud Leak Analyzer</div>
-    <div class="nav-right">
-        <a href="#">Docs</a>
-        <a href="#">About</a>
+<div class="flex justify-between items-center px-10 py-6 text-sm text-gray-300">
+    <div class="font-medium">Cloud Leak Analyzer</div>
+    <div class="space-x-6">
+        <a href="#" class="hover:text-white">Docs</a>
+        <a href="#" class="hover:text-white">About</a>
     </div>
 </div>
 
-<div class="main">
+<!-- MAIN -->
+<div class="flex items-center justify-between h-[80vh] px-20">
 
     <!-- LEFT -->
-    <div class="left">
-        <div class="tag">Cloud Security Platform</div>
+    <div class="max-w-xl">
+        <p class="text-sm text-blue-400 mb-3">Cloud Security Platform</p>
 
-        <h1>A new way to secure your cloud</h1>
+        <h1 class="text-5xl font-semibold leading-tight mb-6">
+            A new way to think<br>about your cloud
+        </h1>
 
-        <p>
-            Detect sensitive data leaks, analyze risks, and secure your infrastructure
-            with intelligent insights built for developers.
+        <p class="text-gray-400 text-lg leading-relaxed">
+            Detect sensitive leaks, analyze risks, and secure your storage
+            with intelligent insights built for modern developers.
         </p>
-
-        <div class="cta">
-            <button class="primary">Get Started</button>
-            <button class="secondary">Learn More</button>
-        </div>
     </div>
 
-    <!-- RIGHT -->
-    <div class="box">
-        <h2>Login</h2>
+    <!-- RIGHT (LOGIN CARD) -->
+    <div class="w-[340px] backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl">
 
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button class="login" type="submit">Login</button>
+        <h2 class="text-xl font-medium mb-6">Login</h2>
+
+        <form method="POST" class="space-y-4">
+            <input type="text" name="username" placeholder="Username"
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 focus:outline-none focus:border-white/30">
+
+            <input type="password" name="password" placeholder="Password"
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 focus:outline-none focus:border-white/30">
+
+            <button type="submit"
+                class="w-full bg-white text-black py-2 rounded-lg hover:bg-gray-200 transition">
+                Login
+            </button>
         </form>
 
-        <a href="/signup">Create account</a>
+        <p class="text-sm text-gray-400 mt-6 text-center">
+            Don’t have an account?
+            <a href="/signup" class="text-white hover:underline">Sign up</a>
+        </p>
+
     </div>
 
 </div>
