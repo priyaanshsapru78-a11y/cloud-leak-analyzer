@@ -9,7 +9,7 @@ app.secret_key = "secret123"
 
 init_db()
 
-# ---------------- LOGIN ----------------
+# LOGIN
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -18,10 +18,8 @@ def login():
 
         conn = sqlite3.connect("database.db")
         cursor = conn.cursor()
-
         cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
         user = cursor.fetchone()
-
         conn.close()
 
         if user:
@@ -33,7 +31,7 @@ def login():
     return render_template("login.html")
 
 
-# ---------------- SIGNUP ----------------
+# SIGNUP
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -55,7 +53,7 @@ def signup():
     return render_template("signup.html")
 
 
-# ---------------- HOME ----------------
+# HOME
 @app.route("/", methods=["GET", "POST"])
 def home():
     if "user" not in session:
@@ -79,14 +77,13 @@ def home():
         conn.commit()
         conn.close()
 
-    # fetch history
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     cursor.execute("SELECT bucket_name, result FROM scans WHERE username=?", (session["user"],))
     history = cursor.fetchall()
     conn.close()
 
-    # risk counts
+    # Risk counts
     critical = sum(1 for r in output if "CRITICAL" in r)
     high = sum(1 for r in output if "HIGH" in r)
     medium = sum(1 for r in output if "MEDIUM" in r)
@@ -104,7 +101,7 @@ def home():
     )
 
 
-# ---------------- LOGOUT ----------------
+# LOGOUT
 @app.route("/logout")
 def logout():
     session.pop("user", None)
