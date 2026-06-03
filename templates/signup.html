@@ -8,65 +8,102 @@
     <style>
         body {
             margin: 0;
-            font-family: 'Poppins', sans-serif;
             height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: #020617;
+        }
+
+        /* BACKGROUND */
+        .bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
 
-        body::before {
+        .bg::before {
             content: "";
             position: absolute;
             width: 200%;
             height: 200%;
-            background: linear-gradient(
-                45deg,
-                #0f172a,
-                #1e3a8a,
-                #0f172a,
-                #2563eb,
-                #0f172a
-            );
-            background-size: 400% 400%;
-            animation: gradientMove 10s ease infinite;
-            z-index: -1;
+            background: radial-gradient(circle at 30% 40%, rgba(0, 102, 255, 0.4), transparent 60%);
+            animation: move1 12s ease-in-out infinite;
         }
 
-        @keyframes gradientMove {
-            0% { transform: translate(0%, 0%); }
-            50% { transform: translate(-25%, -25%); }
-            100% { transform: translate(0%, 0%); }
+        .bg::after {
+            content: "";
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.3), transparent 60%);
+            animation: move2 14s ease-in-out infinite;
         }
 
+        @keyframes move1 {
+            0% { transform: translate(0,0); }
+            50% { transform: translate(-10%, -10%); }
+            100% { transform: translate(0,0); }
+        }
+
+        @keyframes move2 {
+            0% { transform: translate(0,0); }
+            50% { transform: translate(10%, 10%); }
+            100% { transform: translate(0,0); }
+        }
+
+        /* CENTER */
+        .container {
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* GLASS CARD */
         .box {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
             padding: 40px;
-            border-radius: 12px;
-            text-align: center;
+            border-radius: 14px;
             color: white;
-            width: 300px;
+            text-align: center;
+            width: 320px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-weight: 500;
         }
 
         input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             outline: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        input::placeholder {
+            color: #aaa;
         }
 
         button {
             width: 100%;
             padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: none;
             background: white;
             color: black;
-            border: none;
-            border-radius: 6px;
             cursor: pointer;
+            transition: 0.3s;
         }
 
         button:hover {
@@ -74,26 +111,34 @@
         }
 
         a {
-            color: #ddd;
-            text-decoration: none;
+            color: #aaa;
             display: block;
             margin-top: 15px;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: white;
         }
     </style>
 </head>
 
 <body>
 
-<div class="box">
-    <h2>Create Account</h2>
+<div class="bg"></div>
 
-    <form method="POST">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Signup</button>
-    </form>
+<div class="container">
+    <div class="box">
+        <h2>Create Account</h2>
 
-    <a href="/login">Back to login</a>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Signup</button>
+        </form>
+
+        <a href="/login">Back to login</a>
+    </div>
 </div>
 
 </body>
