@@ -3,41 +3,33 @@
 <head>
     <title>Cloud Leak Analyzer</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
             margin: 0;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
-            overflow: hidden;
             background: #020617;
-        }
-
-        /* BASE DARK */
-        .bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
             overflow: hidden;
+            color: white;
         }
 
-        /* LIGHT WAVE 1 */
-        .bg::before {
+        /* BACKGROUND */
+        .bg::before, .bg::after {
             content: "";
             position: absolute;
             width: 200%;
             height: 200%;
+            z-index: -1;
+        }
+
+        .bg::before {
             background: radial-gradient(circle at 30% 40%, rgba(0, 102, 255, 0.4), transparent 60%);
             animation: move1 12s ease-in-out infinite;
         }
 
-        /* LIGHT WAVE 2 */
         .bg::after {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
             background: radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.3), transparent 60%);
             animation: move2 14s ease-in-out infinite;
         }
@@ -54,31 +46,40 @@
             100% { transform: translate(0,0); }
         }
 
-        /* CENTER CONTENT */
-        .container {
-            position: relative;
-            z-index: 10;
-            height: 100vh;
+        /* LAYOUT */
+        .main {
             display: flex;
-            justify-content: center;
+            height: 100vh;
+            padding: 60px;
             align-items: center;
+            justify-content: space-between;
         }
 
-        /* GLASS CARD */
+        /* LEFT SIDE */
+        .left {
+            max-width: 500px;
+        }
+
+        .left h1 {
+            font-size: 42px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .left p {
+            color: #aaa;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* RIGHT SIDE */
         .box {
             background: rgba(255,255,255,0.05);
             backdrop-filter: blur(20px);
             padding: 40px;
             border-radius: 14px;
-            color: white;
-            text-align: center;
             width: 320px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            font-weight: 500;
         }
 
         input {
@@ -87,7 +88,6 @@
             margin: 10px 0;
             border-radius: 8px;
             border: none;
-            outline: none;
             background: rgba(255,255,255,0.1);
             color: white;
         }
@@ -99,13 +99,11 @@
         button {
             width: 100%;
             padding: 12px;
-            margin-top: 10px;
             border-radius: 8px;
             border: none;
             background: white;
             color: black;
             cursor: pointer;
-            transition: 0.3s;
         }
 
         button:hover {
@@ -122,6 +120,7 @@
         a:hover {
             color: white;
         }
+
     </style>
 </head>
 
@@ -129,7 +128,18 @@
 
 <div class="bg"></div>
 
-<div class="container">
+<div class="main">
+
+    <!-- LEFT CONTENT -->
+    <div class="left">
+        <h1>A new way to secure your cloud</h1>
+        <p>
+            Analyze your storage, detect sensitive leaks, and understand risks instantly.
+            Built for developers who care about security.
+        </p>
+    </div>
+
+    <!-- LOGIN BOX -->
     <div class="box">
         <h2>Login</h2>
 
@@ -141,6 +151,7 @@
 
         <a href="/signup">Create account</a>
     </div>
+
 </div>
 
 </body>
