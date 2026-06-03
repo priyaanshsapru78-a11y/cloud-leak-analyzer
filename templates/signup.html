@@ -3,142 +3,68 @@
 <head>
     <title>Signup - Cloud Leak Analyzer</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
-            margin: 0;
-            height: 100vh;
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            background: #020617;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* BACKGROUND */
-        .bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+        .bg-motion {
+            animation: zoom 20s ease-in-out infinite alternate;
         }
 
-        .bg::before {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(0, 102, 255, 0.4), transparent 60%);
-            animation: move1 12s ease-in-out infinite;
-        }
-
-        .bg::after {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 70% 60%, rgba(59, 130, 246, 0.3), transparent 60%);
-            animation: move2 14s ease-in-out infinite;
-        }
-
-        @keyframes move1 {
-            0% { transform: translate(0,0); }
-            50% { transform: translate(-10%, -10%); }
-            100% { transform: translate(0,0); }
-        }
-
-        @keyframes move2 {
-            0% { transform: translate(0,0); }
-            50% { transform: translate(10%, 10%); }
-            100% { transform: translate(0,0); }
-        }
-
-        /* CENTER */
-        .container {
-            position: relative;
-            z-index: 10;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* GLASS CARD */
-        .box {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            padding: 40px;
-            border-radius: 14px;
-            color: white;
-            text-align: center;
-            width: 320px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        input::placeholder {
-            color: #aaa;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            border-radius: 8px;
-            border: none;
-            background: white;
-            color: black;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover {
-            background: #ddd;
-        }
-
-        a {
-            color: #aaa;
-            display: block;
-            margin-top: 15px;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: white;
+        @keyframes zoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
         }
     </style>
 </head>
 
-<body>
+<body class="h-screen w-screen overflow-hidden relative">
 
-<div class="bg"></div>
+<!-- BACKGROUND -->
+<div class="absolute inset-0 bg-motion bg-cover bg-center"
+     style="background-image: url('/static/bg.png');">
+</div>
 
-<div class="container">
-    <div class="box">
-        <h2>Create Account</h2>
+<!-- OVERLAY -->
+<div class="absolute inset-0 bg-black/40"></div>
 
-        <form method="POST">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Signup</button>
+<!-- CENTER -->
+<div class="relative z-10 flex flex-col items-center justify-center h-full">
+
+    <h1 class="text-white text-2xl mb-6 tracking-wide">
+        Cloud Leak Analyzer
+    </h1>
+
+    <!-- SIGNUP CARD -->
+    <div class="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl w-[320px]">
+
+        <h2 class="text-white text-lg mb-6 text-center">Create Account</h2>
+
+        <form method="POST" class="space-y-4">
+            <input type="text" name="username" placeholder="Username"
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-white/30">
+
+            <input type="password" name="password" placeholder="Password"
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-white/30">
+
+            <button type="submit"
+                class="w-full bg-white text-black py-2 rounded-lg hover:bg-gray-200 transition">
+                Signup
+            </button>
         </form>
 
-        <a href="/login">Back to login</a>
+        <p class="text-sm text-gray-300 mt-6 text-center">
+            Already have an account?
+            <a href="/login" class="text-white hover:underline">Login</a>
+        </p>
+
     </div>
+
 </div>
 
 </body>
