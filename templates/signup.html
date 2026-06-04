@@ -12,38 +12,28 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .bg-motion {
-            animation: zoom 20s ease-in-out infinite alternate;
+        .bg-animated {
+            background: radial-gradient(circle at 20% 30%, #1e3a8a, transparent),
+                        radial-gradient(circle at 80% 70%, #2563eb, transparent),
+                        #020617;
+            background-size: 200% 200%;
+            animation: move 12s ease-in-out infinite;
         }
 
-        @keyframes zoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.05); }
+        @keyframes move {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 50% 50%; }
+            100% { background-position: 0% 0%; }
         }
     </style>
 </head>
 
-<body class="h-screen w-screen overflow-hidden relative">
-
-<!-- BACKGROUND -->
-<div class="absolute inset-0 bg-motion bg-cover bg-center"
-     style="background-image: url('/static/bg.png');">
-</div>
-
-<!-- OVERLAY -->
-<div class="absolute inset-0 bg-black/40"></div>
-
-<!-- CENTER -->
-<div class="relative z-10 flex flex-col items-center justify-center h-full">
-
-    <h1 class="text-white text-2xl mb-6 tracking-wide">
-        Cloud Leak Analyzer
-    </h1>
+<body class="bg-animated h-screen flex items-center justify-center text-white">
 
     <!-- SIGNUP CARD -->
-    <div class="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl w-[320px]">
+    <div class="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl w-[320px] text-center">
 
-        <h2 class="text-white text-lg mb-6 text-center">Create Account</h2>
+        <h1 class="text-xl mb-6 font-medium">Create Account</h1>
 
         <form method="POST" class="space-y-4">
             <input type="text" name="username" placeholder="Username"
@@ -58,14 +48,12 @@
             </button>
         </form>
 
-        <p class="text-sm text-gray-300 mt-6 text-center">
+        <p class="text-sm text-gray-400 mt-6">
             Already have an account?
             <a href="/login" class="text-white hover:underline">Login</a>
         </p>
 
     </div>
-
-</div>
 
 </body>
 </html>
