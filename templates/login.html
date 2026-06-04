@@ -10,7 +10,7 @@
         body {
             margin: 0;
             overflow: hidden;
-            background: #020014;
+            background: #030012;
         }
 
         canvas {
@@ -24,7 +24,6 @@
 
 <body>
 
-<!-- LOGIN -->
 <div class="relative z-10 h-screen flex items-center justify-center text-white">
 
     <div class="backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-2xl w-[320px] text-center">
@@ -67,13 +66,11 @@ window.addEventListener("mousemove", (e) => {
 const material = new THREE.ShaderMaterial({
     uniforms: {
         resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-        mouse: { value: new THREE.Vector2(0, 0) },
-        time: { value: 0 }
+        mouse: { value: new THREE.Vector2(0, 0) }
     },
     fragmentShader: `
         uniform vec2 resolution;
         uniform vec2 mouse;
-        uniform float time;
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution;
@@ -82,51 +79,44 @@ const material = new THREE.ShaderMaterial({
 
             float r = length(uv);
 
-            // sphere mask
-            float sphere = smoothstep(0.9, 0.85, r);
+            // HORIZON CUT (important)
+            if (uv.y > 0.3) discard;
 
-            // fake normal
+            // sphere depth
             float z = sqrt(max(0.0, 1.0 - r*r));
             vec3 normal = normalize(vec3(uv, z));
 
-            // light direction (mouse controlled)
-            vec3 light = normalize(vec3(mouse.x * 0.5, mouse.y * 0.5 + 0.4, 1.0));
-
+            // LIGHT
+            vec3 light = normalize(vec3(mouse.x * 0.3, 0.4 + mouse.y * 0.2, 1.0));
             float diff = max(dot(normal, light), 0.0);
 
-            // horizon glow
-            float horizon = smoothstep(0.0, 0.5, normal.y);
+            // HORIZONTAL GLOW BAND
+            float band = exp(-abs(uv.y + 0.05) * 10.0);
 
-            // edge glow
-            float edge = pow(1.0 - r, 3.0);
+            // EDGE SOFTNESS
+            float edge = smoothstep(1.0, 0.7, r);
 
-            // grid lines (subtle)
-            float grid = sin(uv.x * 40.0) * 0.002;
+            // BASE COLORS
+            vec3 color = vec3(0.05, 0.0, 0.1);
 
-            // base dark
-            vec3 color = vec3(0.02, 0.0, 0.05);
-
-            // purple gradient
+            // GRADIENT LAYERS
             color += vec3(0.6, 0.2, 1.0) * diff;
-            color += vec3(0.8, 0.3, 1.0) * horizon;
-            color += vec3(1.0, 0.4, 1.0) * edge;
+            color += vec3(1.0, 0.4, 1.0) * band * 1.5;
+            color += vec3(0.3, 0.1, 0.6) * (1.0 - normal.y);
 
-            // grid effect
-            color += vec3(0.4, 0.2, 0.8) * grid;
+            // APPLY EDGE
+            color *= edge;
 
-            // apply sphere
-            color *= sphere;
+            // REFLECTION
+            vec2 refUV = uv;
+            refUV.y = -refUV.y - 0.6;
 
-            // reflection
-            vec2 uv2 = uv;
-            uv2.y = -uv2.y - 0.6;
+            float r2 = length(refUV);
+            float refFade = smoothstep(0.9, 0.4, r2) * 0.4;
 
-            float r2 = length(uv2);
-            float sphere2 = smoothstep(0.9, 0.85, r2);
+            vec3 reflection = vec3(0.6, 0.2, 1.0) * refFade;
 
-            float reflection = sphere2 * 0.3;
-
-            color += vec3(0.5, 0.2, 1.0) * reflection;
+            color += reflection;
 
             gl_FragColor = vec4(color, 1.0);
         }
@@ -137,7 +127,6 @@ const mesh = new THREE.Mesh(geometry, material);
 scene.add(mesh);
 
 function animate() {
-    material.uniforms.time.value += 0.01;
     material.uniforms.mouse.value.set(mouse.x, mouse.y);
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
