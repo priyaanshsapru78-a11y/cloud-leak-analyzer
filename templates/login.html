@@ -3,10 +3,7 @@
 <head>
     <title>Cloud Leak Analyzer</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
 
     <style>
@@ -14,7 +11,6 @@
             margin: 0;
             overflow: hidden;
             background: black;
-            font-family: Arial, sans-serif;
         }
 
         canvas {
@@ -37,27 +33,25 @@
 
         <form method="POST" class="space-y-4">
             <input type="text" name="username" placeholder="Username"
-                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-white/30">
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400">
 
             <input type="password" name="password" placeholder="Password"
-                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-white/30">
+                class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-white placeholder-gray-400">
 
-            <button type="submit"
-                class="w-full bg-white text-black py-2 rounded-lg hover:bg-gray-200 transition">
+            <button class="w-full bg-white text-black py-2 rounded-lg hover:bg-gray-200">
                 Login
             </button>
         </form>
 
         <p class="text-sm mt-4 text-gray-300">
-            Don’t have an account?
-            <a href="/signup" class="text-white hover:underline">Create account</a>
+            <a href="/signup">Create account</a>
         </p>
 
     </div>
 
 </div>
 
-<!-- THREE.JS BACKGROUND -->
+<!-- THREE.JS -->
 <script>
     const scene = new THREE.Scene();
     const camera = new THREE.Camera();
@@ -68,40 +62,53 @@
 
     const geometry = new THREE.PlaneBufferGeometry(2, 2);
 
+    let mouse = { x: 0.5, y: 0.5 };
+
+    window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX / window.innerWidth;
+        mouse.y = 1.0 - (e.clientY / window.innerHeight);
+    });
+
     const material = new THREE.ShaderMaterial({
         uniforms: {
             time: { value: 0 },
-            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+            resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+            mouse: { value: new THREE.Vector2(0.5, 0.5) }
         },
         fragmentShader: `
             uniform float time;
             uniform vec2 resolution;
+            uniform vec2 mouse;
 
             void main() {
                 vec2 uv = gl_FragCoord.xy / resolution;
                 uv -= 0.5;
 
+                // mouse influence
+                vec2 m = mouse - 0.5;
+                uv += m * 0.2;
+
                 // horizon glow
                 float horizon = smoothstep(-0.2, 0.2, uv.y + 0.25);
 
-                // center glow
-                float glow = 0.5 / length(uv + vec2(0.0, 0.3));
+                // glow center
+                float glow = 0.6 / length(uv + vec2(0.0, 0.3));
 
                 // waves
                 float wave1 = sin((uv.x * 10.0) + time * 0.8) * 0.08;
                 float wave2 = sin((uv.x * 5.0) - time * 0.5) * 0.06;
 
-                // base color
-                vec3 color = vec3(0.01, 0.02, 0.05);
+                // dark base
+                vec3 color = vec3(0.02, 0.01, 0.05);
 
-                // blue waves
-                color += vec3(0.1, 0.3, 0.8) * (wave1 + wave2);
+                // PURPLE tones
+                color += vec3(0.5, 0.2, 1.0) * (wave1 + wave2);
 
                 // horizon light
-                color += vec3(0.2, 0.5, 1.0) * horizon * 0.8;
+                color += vec3(0.6, 0.3, 1.0) * horizon * 0.8;
 
-                // glow center
-                color += vec3(0.3, 0.6, 1.0) * glow;
+                // glow
+                color += vec3(0.7, 0.4, 1.0) * glow;
 
                 gl_FragColor = vec4(color, 1.0);
             }
@@ -113,13 +120,13 @@
 
     function animate() {
         material.uniforms.time.value += 0.015;
+        material.uniforms.mouse.value.set(mouse.x, mouse.y);
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
     }
 
     animate();
 
-    // RESPONSIVE
     window.addEventListener('resize', () => {
         renderer.setSize(window.innerWidth, window.innerHeight);
         material.uniforms.resolution.value.set(window.innerWidth, window.innerHeight);
