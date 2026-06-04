@@ -57,51 +57,78 @@ document.body.appendChild(renderer.domElement);
 
 const geometry = new THREE.PlaneBufferGeometry(2, 2);
 
-let mouse = { x: 0.5, y: 0.5 };
+let mouse = { x: 0, y: 0 };
 
 window.addEventListener("mousemove", (e) => {
-    mouse.x = e.clientX / window.innerWidth;
-    mouse.y = 1.0 - (e.clientY / window.innerHeight);
+    mouse.x = (e.clientX / window.innerWidth - 0.5) * 2.0;
+    mouse.y = (e.clientY / window.innerHeight - 0.5) * 2.0;
 });
 
 const material = new THREE.ShaderMaterial({
     uniforms: {
-        time: { value: 0 },
         resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-        mouse: { value: new THREE.Vector2(0.5, 0.5) }
+        mouse: { value: new THREE.Vector2(0, 0) },
+        time: { value: 0 }
     },
     fragmentShader: `
-        uniform float time;
         uniform vec2 resolution;
         uniform vec2 mouse;
+        uniform float time;
 
         void main() {
             vec2 uv = gl_FragCoord.xy / resolution;
-            uv -= 0.5;
-
-            // mouse shift
-            uv += (mouse - 0.5) * 0.2;
+            uv = uv * 2.0 - 1.0;
+            uv.x *= resolution.x / resolution.y;
 
             float r = length(uv);
 
-            // create sphere shape
-            float sphere = smoothstep(0.5, 0.2, r);
+            // sphere mask
+            float sphere = smoothstep(0.9, 0.85, r);
 
-            // horizon mask (cut top)
-            float mask = step(uv.y, 0.2);
+            // fake normal
+            float z = sqrt(max(0.0, 1.0 - r*r));
+            vec3 normal = normalize(vec3(uv, z));
 
-            // glow edge
-            float glow = pow(0.5 - r, 3.0);
+            // light direction (mouse controlled)
+            vec3 light = normalize(vec3(mouse.x * 0.5, mouse.y * 0.5 + 0.4, 1.0));
+
+            float diff = max(dot(normal, light), 0.0);
+
+            // horizon glow
+            float horizon = smoothstep(0.0, 0.5, normal.y);
+
+            // edge glow
+            float edge = pow(1.0 - r, 3.0);
+
+            // grid lines (subtle)
+            float grid = sin(uv.x * 40.0) * 0.002;
+
+            // base dark
+            vec3 color = vec3(0.02, 0.0, 0.05);
 
             // purple gradient
-            vec3 color = vec3(0.05, 0.0, 0.1);
-            color += vec3(0.7, 0.2, 1.0) * sphere;
-            color += vec3(1.0, 0.4, 1.0) * glow;
+            color += vec3(0.6, 0.2, 1.0) * diff;
+            color += vec3(0.8, 0.3, 1.0) * horizon;
+            color += vec3(1.0, 0.4, 1.0) * edge;
 
-            // combine
-            float finalShape = sphere * mask;
+            // grid effect
+            color += vec3(0.4, 0.2, 0.8) * grid;
 
-            gl_FragColor = vec4(color * finalShape, 1.0);
+            // apply sphere
+            color *= sphere;
+
+            // reflection
+            vec2 uv2 = uv;
+            uv2.y = -uv2.y - 0.6;
+
+            float r2 = length(uv2);
+            float sphere2 = smoothstep(0.9, 0.85, r2);
+
+            float reflection = sphere2 * 0.3;
+
+            color += vec3(0.5, 0.2, 1.0) * reflection;
+
+            gl_FragColor = vec4(color, 1.0);
         }
     `
 });
